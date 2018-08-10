@@ -9,8 +9,8 @@
     <email>pradpnayak@gmail.com</email>
   </maintainer>
   <urls>
-    <url desc="Main Extension Page">http://FIXME</url>
-    <url desc="Documentation">http://FIXME</url>
+    <url desc="Main Extension Page">https://github.com/pradpnayak/org.civicrm.grantfinancialtype/blob/master/README.md</url>
+    <url desc="Documentation">https://github.com/pradpnayak/org.civicrm.grantfinancialtype/blob/master/README.md</url>
     <url desc="Support">https://github.com/pradpnayak/org.civicrm.grantfinancialtype/issues</url>
     <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
   </urls>
