@@ -133,3 +133,81 @@ function grantfinancialtype_civicrm_alterSettingsFolders(&$metaDataFolders = NUL
 function grantfinancialtype_civicrm_entityTypes(&$entityTypes) {
   _grantfinancialtype_civix_civicrm_entityTypes($entityTypes);
 }
+
+/**
+ * Implements hook_civicrm_buildForm().
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_buildForm
+ */
+function grantfinancialtype_civicrm_buildForm($formName, &$form) {
+
+  if (in_array($formName, ['CRM_Grant_Form_Grant', 'CRM_Grant_Form_Search'])) {
+        // Check permissions for financial type first
+    $financialTypes = [];
+    CRM_Financial_BAO_FinancialType::getAvailableFinancialTypes($financialTypes, $form->_action);
+    if (empty($financialTypes)) {
+      CRM_Core_Error::statusBounce(ts('You do not have all the permissions needed for this page.'));
+    }
+    $attr = ['class' => 'crm-select2', 'placeholder' => ts('- select -')];
+    $fieldName = 'financial_type_id';
+    if ($formName == 'CRM_Grant_Form_Search') {
+      $fieldName = 'grant_financial_type_id';
+      $attr['multiple'] = 'multiple';
+    }
+    CRM_Core_Region::instance('page-body')->add([
+      'template' => 'CRM/Grant/Form/GrantExtra.tpl',
+    ]);
+    $form->add('select', $fieldName,
+      ts('Financial Type'),
+      $financialTypes,
+      FALSE,
+      $attr
+    );
+  }
+}
+
+/**
+ * Implements hook_civicrm_pageRun().
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_pageRun
+ */
+function grantfinancialtype_civicrm_pageRun(&$page) {
+  if (is_a($page, 'CRM_Grant_Page_Tab')) {
+    CRM_Core_Region::instance('page-body')->add([
+      'template' => 'CRM/Grant/Page/GrantExtra.tpl',
+    ]);
+  }
+}
+
+/**
+ * Implements hook_civicrm_searchColumns().
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_searchColumns
+ */
+function grantfinancialtype_civicrm_searchColumns($objectName, &$headers, &$rows, &$selector) {
+  if ($objectName == 'grant') {
+    $tempHeaders = [];
+    foreach ($headers as $header) {
+      $tempHeaders[] = $header;
+      if (CRM_Utils_Array::value('sort', $header) == 'grant_type_id') {
+        $tempHeaders[] = [
+          'name' => ts('Financial Type'),
+          //'sort' => 'grant_finacial_type',
+          'direction' => CRM_Utils_Sort::DONTCARE,
+        ];
+      }
+    }
+    $headers = $tempHeaders;
+  }
+}
+
+/**
+ * Implements hook_civicrm_queryObjects().
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_queryObjects
+ */
+function grantfinancialtype_civicrm_queryObjects(&$queryObjects, $type) {
+  if ($type == 'Contact') {
+    $queryObjects[] = new CRM_Grant_BAO_Query_Grant();
+  }
+}
