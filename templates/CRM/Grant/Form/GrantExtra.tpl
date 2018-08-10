@@ -30,3 +30,25 @@
   </script>
   {/literal}
 {/if}
+
+{if $rows}
+<table style="display:none;">
+  <tr>
+    {foreach from=$rows item=row}
+      <td id="grant_financial_type_{$row.grant_id}" class="crm-grant-grant_financial_type">{$row.grant_financial_type}</td>
+    {/foreach}
+  </tr>
+</table>
+
+{literal}
+<script type="text/javascript">
+  CRM.$(function($) {
+    $('table.selector tbody tr').each(function() {
+      var elementId = this.id;
+      var grantId = elementId.replace('crm-grant_', '');
+      $($('td#grant_financial_type_' + grantId)).insertAfter('tr#' + elementId + ' td.crm-grant-grant_type');
+    });
+  });
+</script>
+{/literal}
+{/if}
