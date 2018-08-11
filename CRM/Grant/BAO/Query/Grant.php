@@ -26,6 +26,9 @@ class CRM_Grant_BAO_Query_Grant extends CRM_Contact_BAO_Query_Interface {
    * @return null
    */
   public function select(&$query) {
+    if (empty($query->_tables['civicrm_grant'])) {
+      return;
+    }
     CRM_Grant_Selector_Search::$_properties[] = 'grant_financial_type';
     $query->_returnProperties['grant_financial_type'] = 1;
     $query->_select['grant_financial_type'] = "civicrm_financial_type.name as grant_financial_type";
